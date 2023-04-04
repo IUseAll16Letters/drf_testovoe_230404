@@ -32,6 +32,7 @@ class Employee(models.Model):
         (3, 'Зам.нач'),
         (4, 'Начальник'),
     )
+
     name_first = models.CharField(max_length=100, verbose_name='Имя')
     name_second = models.CharField(max_length=100, verbose_name='Фамилия')
     name_middle = models.CharField(max_length=100, verbose_name='Отчество')
