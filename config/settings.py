@@ -108,6 +108,6 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 MEDIA_ROOT = BASE_DIR / 'media'
-
+MEDIA_URL = 'media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

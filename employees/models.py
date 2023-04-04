@@ -3,8 +3,8 @@ from django.db import models
 
 
 def upload_photo_to(instance, filename):
-    print(instance, filename)
     # TODO: file format and size validation? / ImageField
+    print(instance, filename)
     new_string = f'{datetime.now()}_{filename}'
     return new_string
 
