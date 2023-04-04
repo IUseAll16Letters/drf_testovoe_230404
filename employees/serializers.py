@@ -4,18 +4,17 @@ from .models import Employee, Department
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
-    dept_name = serializers.CharField(source='dept.name', default=None)
 
     class Meta:
         model = Employee
         fields = ['id', 'name_first', 'name_second', 'name_middle', 'photo',
-                  'age', 'position', 'salary', 'dept_id', 'dept_name']
+                  'age', 'position', 'salary', 'dept']
 
 
 class DepartmentSerializer(serializers.HyperlinkedModelSerializer):
-    head_fullname = serializers.ReadOnlyField(default=None)
-    total_employees = serializers.ReadOnlyField()
-    employees_fund = serializers.ReadOnlyField()
+    head_fullname = serializers.CharField(default=None, read_only=True)
+    total_employees = serializers.DecimalField(decimal_places=2, max_digits=11, read_only=True)
+    employees_fund = serializers.DecimalField(decimal_places=2, max_digits=11, read_only=True)
 
     class Meta:
         model = Department

@@ -1,6 +1,8 @@
 from datetime import datetime
 from django.db import models
 
+from django.core.validators import MinValueValidator, MaxValueValidator
+
 
 def upload_photo_to(instance, filename):
     # TODO: file format and size validation? / ImageField
@@ -11,8 +13,8 @@ def upload_photo_to(instance, filename):
 
 class Department(models.Model):
     name = models.CharField(max_length=255, verbose_name='Department name')
-    head = models.ForeignKey('Employee', on_delete=models.SET_NULL, null=True, related_name='employee',
-                             verbose_name='Department head')
+    head = models.OneToOneField('Employee', on_delete=models.SET_NULL, null=True, related_name='head',
+                                verbose_name='Department head')
 
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -21,11 +23,12 @@ class Department(models.Model):
         verbose_name = 'Отдел'
         verbose_name_plural = 'Отделы'
 
-    # def __str__(self):
-    #     return f'{self.name} (head: {self.head.id})'
+    def __str__(self):
+        return f'name: {self.name} head_id: {self.head_id}'
 
 
 class Employee(models.Model):
+    # TODO: ChoiceField?
     POSITION_CHOICES = (
         (1, 'Стажер'),
         (2, 'Сотрудник'),
@@ -37,7 +40,12 @@ class Employee(models.Model):
     name_second = models.CharField(max_length=100, verbose_name='Фамилия')
     name_middle = models.CharField(max_length=100, verbose_name='Отчество')
     photo = models.ImageField(upload_to=upload_photo_to, blank=True, null=True, verbose_name='Фото')
-    age = models.PositiveSmallIntegerField(blank=True, null=True, verbose_name='Возраст')
+    age = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(16), MaxValueValidator(99)],
+        blank=True,
+        null=True,
+        verbose_name='Возраст'
+    )
 
     position = models.PositiveSmallIntegerField(choices=POSITION_CHOICES, null=True, blank=True)
     salary = models.DecimalField(max_digits=11, decimal_places=2)
@@ -53,5 +61,5 @@ class Employee(models.Model):
         verbose_name_plural = 'Сотрудники'
         unique_together = ['name_first', 'name_second', 'name_middle', 'dept']
 
-    # def __str__(self):
-    #     return f'surn:{self.name_second} pos:{self.position} dpt:{self.dept}'
+    def __str__(self):
+        return f'{self.name_second} {self.position} {self.dept_id}'

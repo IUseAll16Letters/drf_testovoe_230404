@@ -21,7 +21,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-pos)ays&htzhfl^38t45_)pv2)avvx4qb95y63vfhij')
 
-
 DEBUG = os.getenv('DEBUG', True)
 
 ALLOWED_HOSTS = []
@@ -40,6 +39,10 @@ INSTALLED_APPS = [
 
     'employees',
 ]
+
+if DEBUG:
+    INSTALLED_APPS.append('django_extensions')
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
