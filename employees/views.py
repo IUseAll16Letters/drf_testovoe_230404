@@ -10,26 +10,27 @@ from .models import Employee, Department
 
 class EmployeeViewSet(ModelViewSet):
     serializer_class = EmployeeSerializer
-    queryset = Employee.objects.select_related('dept').only('id', 'name_first', 'name_second', 'name_middle',
-                                                            'age', 'salary', 'dept', 'position', 'dept__name')
+    queryset = Employee.objects.select_related('dept')\
+        .only('id', 'name_first', 'name_second', 'name_middle', 'photo',
+              'age', 'position', 'salary', 'dept_id', 'dept__name')
     filter_backends = [DjangoFilterBackend]
     permission_classes = [IsAuthenticated]
     filterset_fields = ['name_second', 'dept_id']
 
     def get_queryset(self):
-        if self.request.GET:
-            dept_id = self.request.GET.get('dept_id')
-            dept_f = Q()
-            print(dept_f)
-            dept_f = dept_f | Q(dept_id=dept_id)
-            print(dept_f)
-            print(dept_f & Q())
-
-            print(dept_id)
+        # if self.request.GET:
+        #     dept_id = self.request.GET.get('dept_id')
+        #     dept_f = Q()
+        #     print(dept_f)
+        #     dept_f = dept_f | Q(dept_id=dept_id)
+        #     print(dept_f)
+        #     print(dept_f & Q())
+        #
+        #     print(dept_id)
         ret = super().get_queryset()
 
-        print(ret.query.__str__())
-        print(ret)
+        # print(ret.query.__str__())
+        # print(ret)
         return ret
 
 
@@ -39,8 +40,11 @@ class DepartmentViewSet(ModelViewSet):
     queryset = Department.objects.select_related('head')\
         .annotate(total_employees=Count('employee__id', distinct=True),
                   employees_fund=Sum('employee__salary'),
-                  head_fullname=Concat(
-                      F('head__name_first'), V(' '),  F('head__name_second'), V(' '), F('head__name_middle'))
+                  head_fullname=Case(
+                      When(head__isnull=True, then=None),
+                      default=Concat(
+                          F('head__name_first'), V(' '),  F('head__name_second'), V(' '), F('head__name_middle')),
+                  )
                   )\
         .only('head__name_first', 'head__name_second', 'head__name_middle', 'name', 'id')
     permission_classes = [IsAuthenticatedOrReadOnly]

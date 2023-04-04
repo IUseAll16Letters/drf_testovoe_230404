@@ -8,8 +8,8 @@ from employees.views import EmployeeViewSet, DepartmentViewSet
 
 
 router = DefaultRouter()
-router.register('employees', EmployeeViewSet, basename='employees')
-router.register('departments', DepartmentViewSet, basename='departments')
+router.register('employee', EmployeeViewSet, basename='employee')
+router.register('department', DepartmentViewSet, basename='department')
 
 
 urlpatterns = [
