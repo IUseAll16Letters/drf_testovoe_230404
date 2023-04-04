@@ -62,4 +62,4 @@ class Employee(models.Model):
         unique_together = ['name_first', 'name_second', 'name_middle', 'dept']
 
     def __str__(self):
-        return f'{self.name_second} {self.position} {self.dept_id}'
+        return f'{self.name_second} {self.position}'
