@@ -10,9 +10,9 @@ from .models import Employee, Department
 
 class EmployeeViewSet(ModelViewSet):
     serializer_class = EmployeeSerializer
-    queryset = Employee.objects.select_related('dept').prefetch_related('dept')\
-        .only('id', 'name_first', 'name_second', 'name_middle', 'photo',
-              'age', 'position', 'salary', 'dept_id', 'dept__name')
+    queryset = Employee.objects.\
+        select_related('dept').only('id', 'name_first', 'name_second', 'name_middle', 'photo', 'age', 'position',
+                                    'salary', 'dept_id', 'dept__name', 'created', 'updated')
     filter_backends = [DjangoFilterBackend]
     permission_classes = [IsAuthenticated]
     filterset_fields = ['name_second', 'dept_id']
@@ -22,7 +22,8 @@ class DepartmentViewSet(ModelViewSet):
     pagination_class = None
     serializer_class = DepartmentSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    queryset = Department.objects.select_related('head')\
+    queryset = Department.objects\
+        .select_related('head')\
         .annotate(total_employees=Count('employee__id'),
                   employees_fund=Sum('employee__salary'),
                   head_fullname=Case(

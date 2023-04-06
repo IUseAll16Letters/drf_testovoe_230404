@@ -11,7 +11,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
                   'age', 'position', 'salary', 'dept']
 
 
-class DepartmentSerializer(serializers.HyperlinkedModelSerializer):
+class DepartmentSerializer(serializers.ModelSerializer):
     head_fullname = serializers.CharField(default=None, read_only=True)
     total_employees = serializers.IntegerField(max_value=2000, read_only=True)
     employees_fund = serializers.DecimalField(decimal_places=2, max_digits=11, read_only=True)
