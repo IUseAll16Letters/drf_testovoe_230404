@@ -47,18 +47,5 @@ services:
     links:
       - redis
     depends_on:
+      - db
       - redis
-
-  flower:
-    image: mher/flower:0.9.7
-    hostname: flower
-    command: ['flower', '--broker=redis://redis:6379', '--port=5555']
-    volumes:
-      - .:/app
-    links:
-      - redis
-    depends_on:
-      - redis
-      - celery
-    ports:
-      - 5555:5555
