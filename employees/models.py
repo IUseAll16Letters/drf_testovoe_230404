@@ -6,7 +6,6 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 def upload_photo_to(instance, filename):
     # TODO: file format and size validation? / ImageField
-    print(instance, filename)
     new_string = f'{datetime.now()}_{filename}'
     return new_string
 
@@ -28,12 +27,16 @@ class Department(models.Model):
 
 
 class Employee(models.Model):
-    # TODO: ChoiceField?
+    TRAINEE = 1
+    STAFF = 2
+    DEPUTY_CHIEF = 3
+    HEAD = 4
+
     POSITION_CHOICES = (
-        (1, 'Стажер'),
-        (2, 'Сотрудник'),
-        (3, 'Зам.нач'),
-        (4, 'Начальник'),
+        (TRAINEE, 'Стажер'),
+        (STAFF, 'Сотрудник'),
+        (DEPUTY_CHIEF, 'Зам.нач'),
+        (HEAD, 'Начальник'),
     )
 
     name_first = models.CharField(max_length=100, verbose_name='Имя')
@@ -47,11 +50,11 @@ class Employee(models.Model):
         verbose_name='Возраст'
     )
 
-    position = models.PositiveSmallIntegerField(choices=POSITION_CHOICES, null=True, blank=True)
+    position = models.PositiveSmallIntegerField(choices=POSITION_CHOICES, null=True, blank=True,
+                                                verbose_name='Должность')
     salary = models.DecimalField(max_digits=11, decimal_places=2)
 
-    dept = models.ForeignKey(Department, on_delete=models.SET_NULL,
-                             null=True, blank=True)
+    dept = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Отдел')
 
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -60,6 +63,9 @@ class Employee(models.Model):
         verbose_name = 'Сотрудник'
         verbose_name_plural = 'Сотрудники'
         unique_together = ['name_first', 'name_second', 'name_middle', 'dept']
+        indexes = [
+            models.Index(fields=['name_second'], name='name_second_idx'),
+        ]
 
     def __str__(self):
         return f'{self.name_second} {self.position}'

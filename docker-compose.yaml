@@ -28,24 +28,26 @@ services:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-
-  redis:
-    image: redis:7.0.5-alpine
-    restart: unless-stopped
     ports:
-      - "6379:6379"
-    hostname: redis
+      - "5432:5432"
 
-  celery:
-    build:
-        context: .
-    hostname: worker
-    entrypoint: celery
-    command: -A config worker -l DEBUG
-    volumes:
-      - .:/app
-    links:
-      - redis
-    depends_on:
-      - db
-      - redis
+#  redis:
+#    image: redis:7.0.5-alpine
+#    restart: unless-stopped
+#    ports:
+#      - "6379:6379"
+#    hostname: redis
+#
+#  celery:
+#    build:
+#        context: .
+#    hostname: worker
+#    entrypoint: celery
+#    command: -A config worker -l DEBUG
+#    volumes:
+#      - .:/app
+#    links:
+#      - redis
+#    depends_on:
+#      - db
+#      - redis
